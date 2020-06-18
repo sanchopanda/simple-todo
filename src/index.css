@@ -75,3 +75,26 @@ code {
     transform: translateX(-200px);
   }
 }
+
+.alert__text {
+  padding: 10px;
+  background-color: red;
+  color: #fff;
+  border-radius: 5px;
+}
+
+.alert-enter {
+  opacity: 0;
+}
+
+.alert-enter-active {
+  opacity: 1;
+  transition: 500ms;
+}
+
+.alert-exit-active {
+  opacity: 0;
+  transition: 350ms;
+}
+
+

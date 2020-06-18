@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 function useInputValue(defaultValue = '') {
   const [value, setValue] = useState(defaultValue)
-
+ 
   return {
     bind: {
       value,
@@ -14,7 +14,7 @@ function useInputValue(defaultValue = '') {
   }
 }
 
-function AddTodo({ onCreate }) {
+function AddTodo({ onCreate, addAlert }) {
   const input = useInputValue('')
 
   function submitHandler(event) {
@@ -23,6 +23,9 @@ function AddTodo({ onCreate }) {
     if (input.value().trim()) {
       onCreate(input.value())
       input.clear()
+      addAlert(false)
+    } else {
+      addAlert(true)
     }
   }
 

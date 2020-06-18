@@ -1,45 +1,50 @@
-import React, { useEffect } from 'react'
-import TodoList from './Todo/TodoList'
-import Context from './context'
-import Loader from './Loader'
+import React, { useEffect } from "react";
+import TodoList from "./Todo/TodoList";
+import Context from "./context";
+import Loader from "./Loader/Loader";
+import Alert from "./Alert/Alert";
+import { CSSTransition } from "react-transition-group";
 
 const AddTodo = React.lazy(
+  //отложенная загрузка
   () =>
     new Promise(resolve => {
       setTimeout(() => {
-        resolve(import('./Todo/AddTodo'))
-      }, 1000)
+        resolve(import("./Todo/AddTodo"));
+      }, 1000);
     })
-)
+);
 
 function App() {
-  const [todos, setTodos] = React.useState([])
-  const [loading, setLoading] = React.useState(true)
+  const [todos, setTodos] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [alert, setAlert] = React.useState(false);
 
   useEffect(() => {
-    fetch('https://jsonplaceholder.typicode.com/todos?_limit=5')
+    fetch("https://jsonplaceholder.typicode.com/todos?_limit=5")
       .then(response => response.json())
       .then(todos => {
         setTimeout(() => {
-          setTodos(todos)
-          setLoading(false)
-        }, 2000)
-      })
-  }, [])
+          //симуляция загрузки
+          setTodos(todos);
+          setLoading(false);
+        }, 2000);
+      });
+  }, []);
 
   function toggleTodo(id) {
     setTodos(
       todos.map(todo => {
         if (todo.id === id) {
-          todo.completed = !todo.completed
+          todo.completed = !todo.completed;
         }
-        return todo
+        return todo;
       })
-    )
+    );
   }
 
   function removeTodo(id) {
-    setTodos(todos.filter(todo => todo.id !== id))
+    setTodos(todos.filter(todo => todo.id !== id));
   }
 
   function addTodo(title) {
@@ -51,16 +56,28 @@ function App() {
           completed: false
         }
       ])
-    )
+    );
+  }
+
+  function addAlert(boolean) {
+    setAlert(boolean);
   }
 
   return (
     <Context.Provider value={{ removeTodo }}>
-      <div className='wrapper'>
+      <div className="wrapper">
         <h1>Todo app</h1>
-
+        <CSSTransition
+          in={alert}
+          classNames={"alert"}
+          timeout={500}
+          mountOnEnter
+          unmountOnExit
+        >
+          {<Alert />}
+        </CSSTransition>
         <React.Suspense fallback={<Loader />}>
-          <AddTodo onCreate={addTodo} />
+          <AddTodo onCreate={addTodo} addAlert={addAlert} />
         </React.Suspense>
 
         {loading && <Loader />}
@@ -71,7 +88,7 @@ function App() {
         )}
       </div>
     </Context.Provider>
-  )
+  );
 }
 
-export default App
+export default App;
